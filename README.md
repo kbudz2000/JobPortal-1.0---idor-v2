@@ -143,9 +143,3 @@ The screenshot demonstrates access to a job seeker's biodata using:
 The screenshot demonstrates access to a different job seeker's biodata after changing the identifier to:
 
 `/jobportal/Employer/ViewBiodata.php?JobSeekId=6`
-
-
-
-**Testing environment:** Kali Linux / Firefox / Local Job Portal installation
-
-**Disclaimer:** This proof of concept was prepared for educational purposes and authorized security testing. Testing should only be performed against systems for which explicit permission has been granted.
