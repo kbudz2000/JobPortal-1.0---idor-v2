@@ -20,14 +20,6 @@ By changing the `JobSeekId` value, an attacker can retrieve biodata belonging to
 - **Version:** Not independently verified; tested local installation
 - **CVE:** Not assigned
 
-## Preconditions
-
-Use an authorized local installation of the Job Portal application containing at least two test job seeker profiles.
-
-No authenticated session is required to reproduce the reported vulnerability.
-
-The identifiers `4` and `6` were used during testing.
-
 ## Steps to reproduce
 
 1. Open a new private browser window to ensure that no authenticated session is active.
@@ -135,91 +127,24 @@ The precise PHP implementation of `ViewBiodata.php` was not reviewed as part of 
 
 Successful exploitation allows unauthorized users to access personal information belonging to multiple job seekers.
 
-Potential security consequences include:
 
-- **Personal data exposure:** Unauthorized disclosure of names, contact details, addresses, and dates of birth.
-- **User enumeration:** Identifying accessible job seeker records through predictable numeric identifiers.
-- **Privacy violations:** Access to personal information without authentication or appropriate authorization.
-- **Social engineering:** Exposed personal information may facilitate targeted phishing and impersonation attempts.
-- **Resume exposure:** The displayed resume links may expose additional sensitive information if the underlying files are accessible without authorization.
+### Screenshot 4.png — Job Seeker ID 4
 
-The vulnerability affects the confidentiality of job seeker information.
-
-No modification or deletion of candidate profiles was demonstrated through this endpoint.
-
-## Remediation
-
-To mitigate the vulnerability, the application should implement the following security controls:
-
-1. **Enforce authentication:** Require a valid authenticated session before allowing access to the biodata endpoint.
-2. **Implement object-level authorization:** Verify that the authenticated user has permission to view the requested job seeker's information.
-3. **Apply least privilege:** Restrict access to candidate records based on legitimate application workflows.
-4. **Validate object ownership and access relationships:** Do not rely on a user-supplied identifier as proof of authorization.
-5. **Protect sensitive information:** Limit returned personal data to what is necessary for the authorized business operation.
-6. **Handle unauthorized requests:** Return appropriate HTTP error responses without exposing sensitive records.
-7. **Disable verbose PHP errors in production:** Log application warnings securely rather than displaying internal paths to users.
-8. **Restrict resume access:** Apply authorization checks to resume downloads independently of the biodata page.
-
-### Secure Implementation Concept
-
-A secure implementation should perform authentication and authorization checks before retrieving or rendering a job seeker's personal information.
-
-Example authorization flow:
-
-```text
-1. Receive request containing JobSeekId.
-2. Verify that the user is authenticated.
-3. Identify the authenticated user and their role.
-4. Validate the requested JobSeekId.
-5. Determine whether the user is authorized
-   to access the requested candidate profile.
-6. Reject unauthorized requests.
-7. Return only the permitted information.
-```
-
-Authorization must be enforced on the server side for each requested object.
-
-## Evidence
-
-### Screenshot 1 — Job Seeker ID 4
-
-**File:** `01-jobseeker-id4.png`
+**File:** `4.png`
 
 The screenshot demonstrates access to a job seeker's biodata using:
 
 `/jobportal/Employer/ViewBiodata.php?JobSeekId=4`
 
-The response displays personal information associated with the selected identifier.
+### Screenshot 6.png — Job Seeker ID 6
 
-### Screenshot 2 — Job Seeker ID 6
-
-**File:** `02-jobseeker-id6.png`
+**File:** `6.png`
 
 The screenshot demonstrates access to a different job seeker's biodata after changing the identifier to:
 
 `/jobportal/Employer/ViewBiodata.php?JobSeekId=6`
 
-The displayed information changes according to the supplied identifier.
 
-The screenshots should have personal information redacted before public publication.
-
-## Conclusion
-
-The security assessment identified an **Unauthenticated Insecure Direct Object Reference (IDOR)** vulnerability in the Job Portal application's job seeker biodata functionality.
-
-The affected endpoint allows users to access different candidate profiles by modifying the `JobSeekId` URL parameter.
-
-The observed behavior, combined with testing performed without an authenticated session, demonstrates a failure to enforce appropriate access restrictions on personal information.
-
-This vulnerability exposes sensitive job seeker data and compromises the confidentiality of the application.
-
-Proper authentication and object-level authorization must be implemented to ensure that candidate information is accessible only to authorized users.
-
----
-
-**Research date:** November 17, 2026
-
-**Researcher:** kbudz2000
 
 **Testing environment:** Kali Linux / Firefox / Local Job Portal installation
 
